@@ -36,9 +36,9 @@ $('#chat').load('chat_reload.php');
               <h3 class="box-title">Chat</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body" >
               <!-- Conversations are loaded here -->
-              <div class="direct-chat-messages" id="chat" style="height:65vh; overflow-x: hidden;">
+              <div class="direct-chat-messages" id="chat" style="height:65vh; overflow-x: hidden; margin-bottom:0;">
                 <!-- Message. Default to the left -->
                   
                 <?php
@@ -71,7 +71,6 @@ $('#chat').load('chat_reload.php');
 					</div>
                     <!-- /.direct-chat-msg -->';
 				  }else{
-                    
                     echo '<div class="direct-chat-msg">
 							<div class="left" style="float:left;">
                             <div class="direct-chat-info clearfix">';
@@ -89,15 +88,19 @@ $('#chat').load('chat_reload.php');
                       echo '</div>
                       <!-- /.direct-chat-text -->
                     </div>
-					</div>
+                    </div>
                     <!-- /.direct-chat-msg -->';
+                      
 					}
                 }
                 ?>
                 </div>
               <!--/.direct-chat-messages-->
               <!-- /.direct-chat-pane -->
-            </div>
+              </div>
+                <?php 
+                	echo str_repeat('</div>', mysqli_num_rows($conn->query("SELECT * FROM chat WHERE NOT user_id =" . $_SESSION['user_id'] )) - 1);
+                ?>
             <!-- /.box-body -->
             <div class="box-footer">
               <form action="chat.php" method="POST">

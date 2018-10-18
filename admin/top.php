@@ -348,6 +348,18 @@ $version = '0.4.1';
         ?>
         <li class="header">ADMIN L&G</li>
         
+        <li class="treeview">
+            <a href="#"  >
+            <i class="fa fa-square-o"></i> <span>Website</span>
+            <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="website.php?page=create"><i class="fa fa-edit "></i>Aanmaken</a></li>
+                <li><a href="website.php?page=settings"><i class="fa fa-gear "></i>Instellingen</a></li>
+            </ul>
+        </li>
         <li>
             <a href="users.php">
                 <i class="fa fa-users"></i> <span>Gebruikers</span>

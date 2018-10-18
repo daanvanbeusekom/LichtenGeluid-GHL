@@ -30,7 +30,8 @@ check_logged_in();
                       echo '</div>
                       <!-- /.direct-chat-text -->
                     </div>
-					</div>
+                    </div>
+                    
                     <!-- /.direct-chat-msg -->';
 				  }else{
                     
