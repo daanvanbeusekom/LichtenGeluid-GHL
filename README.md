@@ -41,7 +41,7 @@ $db_name = "lgadmin";
 * [Javascript](/) - Gebruikt voor acties e.d.
 * [SQL](/) - Database Connection
 
-## Authors
+## Bewerkers
 
 * **Daan van Beusekom** - *Initial work* - [daanvanbeusekom](https://github.com/daanvanbeusekom)
 
