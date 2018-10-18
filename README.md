@@ -1,1 +1,1 @@
-# LichtenGeluid-GHL
+# Licht en Geluid GHL
