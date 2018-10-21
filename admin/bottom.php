@@ -43,6 +43,8 @@
 </script>
 <?php 
 
+activaty();
+
 $PAGE = basename($_SERVER['PHP_SELF']); 
 
     if($PAGE =='calendar.php'){

@@ -19,6 +19,9 @@ include "top.php";
     <section class="content">
       <!-- Info boxes -->
           <?php 
+            error_reporting(0);
+            ini_set('display_errors', 0);
+            
             $SQL = "SELECT * FROM users ORDER BY user_name ASC";
             $col_number = 1;  
           

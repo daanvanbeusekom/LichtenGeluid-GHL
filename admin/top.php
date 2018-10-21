@@ -7,18 +7,6 @@ session_start();
 check_logged_in();
 
 
-if(isset($_SESSION["user_name"]))  
-      {  
-           if((time() - $_SESSION['last_login_timestamp']) > 900) // 900 = 15 * 60  
-           {  
-               $query = $_SERVER['PHP_SELF'];
-               $path = pathinfo( $query );
-               setcookie('url_lock',$path['basename'],time() + (86400 * 30), "/");
-
-                header("location:lock.php");  
-           }  
-      }  
-
 $version = '0.4.1';
 ?> 
 
@@ -357,6 +345,8 @@ $version = '0.4.1';
             </a>
             <ul class="treeview-menu">
                 <li><a href="website.php?page=create"><i class="fa fa-edit "></i>Aanmaken</a></li>
+                <li><a href="website.php?page=pages"><i class="fa fa-file-text-o "></i>Pagina's</a></li>
+                <li><a href="website.php?page=fileditor"><i class="fa fa-edit "></i>Fileditor</a></li>
                 <li><a href="website.php?page=settings"><i class="fa fa-gear "></i>Instellingen</a></li>
             </ul>
         </li>

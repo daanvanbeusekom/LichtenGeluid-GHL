@@ -2,17 +2,6 @@
 include "top.php";
 ?>
 
-<script>
-window.onload=function () {
-     var objDiv = document.getElementById("chat");
-     objDiv.scrollTop = objDiv.scrollHeight;
-}
-var auto_refresh = setInterval(
-function()
-{
-$('#chat').load('chat_reload.php');
-}, 2000);
-</script>
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -29,93 +18,7 @@ $('#chat').load('chat_reload.php');
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            <div class="col-md-9">
-          <!-- DIRECT CHAT WARNING -->
-          <div class="box box-warning direct-chat direct-chat-warning">
-            <div class="box-header with-border">
-              <h3 class="box-title">Chat</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body" >
-              <!-- Conversations are loaded here -->
-              <div class="direct-chat-messages" id="chat" style="height:65vh; overflow-x: hidden; margin-bottom:0;">
-                <!-- Message. Default to the left -->
-                  
-                <?php
-                  
-                $SQL = "SELECT * FROM chat";
-                $result = $conn->query($SQL);
-                  
-                
-                 while($row = mysqli_fetch_assoc($result)){
-                  $user_id = $row['user_id'];
-				  
-				  if($user_id == $_SESSION['user_id']){
-					echo '<div class="direct-chat-msg right">
-							<div class="right" style="float:right;">
-                            <div class="direct-chat-info clearfix">';
-
-                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
-                            $result2 = $conn->query($SQL);
-                            while($row2 = mysqli_fetch_assoc($result2)){
-                              echo '<span class="direct-chat-name pull-right">' . $row2['user_name'] . '</span>';  
-                              echo '<span class="direct-chat-timestamp pull-left">' . $row['chat_date'] . '</span></div>';
-                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
-                            }
-                            
-                      echo '<div class="direct-chat-text" style="background: #f39c12; border-color: #f39c12; color: #fff;">';
-                        echo $row['chat_content'];
-                      echo '</div>
-                      <!-- /.direct-chat-text -->
-                    </div>
-					</div>
-                    <!-- /.direct-chat-msg -->';
-				  }else{
-                    echo '<div class="direct-chat-msg">
-							<div class="left" style="float:left;">
-                            <div class="direct-chat-info clearfix">';
-
-                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
-                            $result2 = $conn->query($SQL);
-                            while($row2 = mysqli_fetch_assoc($result2)){
-                              echo '<span class="direct-chat-name pull-left">' . $row2['user_name'] . '</span>';  
-                              echo '<span class="direct-chat-timestamp pull-right">' . $row['chat_date'] . '</span></div>';
-                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
-                            }
-                            
-                      echo '<div class="direct-chat-text">';
-                        echo $row['chat_content'];
-                      echo '</div>
-                      <!-- /.direct-chat-text -->
-                    </div>
-                    </div>
-                    <!-- /.direct-chat-msg -->';
-                      
-					}
-                }
-                ?>
-                </div>
-              <!--/.direct-chat-messages-->
-              <!-- /.direct-chat-pane -->
-              </div>
-                <?php 
-                	echo str_repeat('</div>', mysqli_num_rows($conn->query("SELECT * FROM chat WHERE NOT user_id =" . $_SESSION['user_id'] )) - 1);
-                ?>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <form action="chat.php" method="POST">
-                <div class="input-group">
-                  <input type="text" name="message" placeholder="Typ bericht ..." class="form-control">
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-warning btn-flat">Verzend</button>
-                      </span>
-                </div>
-              </form>
-            </div>
-            <!-- /.box-footer-->
-          </div>
-          <!--/.direct-chat -->
-        </div>
+        <?php chat_final($conn, 9, 0, 'height:65vh;'); ?>
         
         <div class="col-sm-3 toggle-contact-list">
               <div class="box box-warning direct-chat direct-chat-warning">  
@@ -160,21 +63,5 @@ $('#chat').load('chat_reload.php');
 </div>
   <!-- /.content-wrapper -->
 <?php
-if(isset($_POST['message']) | !empty($_POST['message'])){
-
-	$message = $_POST['message'];
-	$user_id = $_SESSION['user_id'];
-	
-	$SQL = "INSERT INTO `chat`(`chat_content`, `chat_date`, `user_id`) VALUES ('$message',NOW(),'$user_id')";
-	$result = $conn->query($SQL);
-	
-	if(!$result){
-        echo '<div class="callout callout-danger"><h4>Mislukt :(</h4><p>Er is iets mis gegaan, probeer het eens opnieuw</p>';
-        echo $conn->error; //debugging purposes, uncomment when needed
-        echo '</div>';
-	}else{
-		header('Refresh: 0; url=chat.php');
-	}
-}
 include "bottom.php";
 ?>

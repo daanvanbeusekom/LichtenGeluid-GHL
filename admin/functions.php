@@ -363,4 +363,268 @@ function generateRandomString($length = 11) {
     }
     return $randomString;
 }
+
+function activaty() {
+
+echo '<script>
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+var timeoutID;
+
+var href = window.location.href;
+var dir = href.substring(0, href.lastIndexOf("/")) + "/";
+
+        function setup() {
+            this.addEventListener("mousemove", resetTimer, false);
+            this.addEventListener("mousedown", resetTimer, false);
+            this.addEventListener("keypress", resetTimer, false);
+            this.addEventListener("DOMMouseScroll", resetTimer, false);
+            this.addEventListener("mousewheel", resetTimer, false);
+            this.addEventListener("touchmove", resetTimer, false);
+            this.addEventListener("MSPointerMove", resetTimer, false);
+
+            startTimer();
+        }
+        setup();
+
+        function startTimer() {
+            timeoutID = window.setTimeout(goInactive, 900000); //15*60*1000 = 900000
+        }
+
+        function resetTimer(e) {
+            window.clearTimeout(timeoutID);
+
+            goActive();
+        }
+        
+        function goInactive() {
+            url = window.location.href;
+            setCookie("url_lock", url, 30);
+            
+            window.location.href = dir + "lock.php";
+        }
+
+        function goActive() {
+            
+            startTimer();
+        }
+        
+
+</script>';
+    
+}
+
+function chat($conn) {
+    $SQL = "SELECT * FROM chat ORDER BY chat_date ASC";
+                $result = $conn->query($SQL);
+                  
+                
+                 while($row = mysqli_fetch_assoc($result)){
+                  $user_id = $row['user_id'];
+				  
+				  if($user_id == $_SESSION['user_id']){
+					echo '<div class="direct-chat-msg right">
+							<div class="right" style="float:right;">
+                            <div class="direct-chat-info clearfix">';
+
+                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
+                            $result2 = $conn->query($SQL);
+                            while($row2 = mysqli_fetch_assoc($result2)){
+                              echo '<span class="direct-chat-name pull-right">' . $row2['user_name'] . '</span>';  
+                              echo '<span class="direct-chat-timestamp pull-left">' . $row['chat_date'] . '</span>';
+                              echo '</div>';
+                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
+                            }
+                            
+                      echo '<div class="direct-chat-text" style="background: #f39c12; border-color: #f39c12; color: #fff;">';
+                        echo $row['chat_content'];
+                      echo '</div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+                    </div>
+                    
+                    <!-- /.direct-chat-msg -->';
+				  }else{
+                    
+                    echo '<div class="direct-chat-msg">
+							<div class="left" style="float:left;">
+                            <div class="direct-chat-info clearfix">';
+
+                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
+                            $result2 = $conn->query($SQL);
+                            while($row2 = mysqli_fetch_assoc($result2)){
+                              echo '<span class="direct-chat-name pull-left">' . $row2['user_name'] . '</span>';  
+                              echo '<span class="direct-chat-timestamp pull-right">' . $row['chat_date'] . '</span>';
+                              echo '</div>';
+                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
+                            }
+                            
+                      echo '<div class="direct-chat-text">';
+                        echo $row['chat_content'];
+                      echo '</div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+					</div>
+                    <!-- /.direct-chat-msg -->';
+					}
+                }
+}
+
+function chat_message($conn) {
+     if(isset($_POST['message']) | !empty($_POST['message'])){
+
+        $message = $_POST['message'];
+        $user_id = $_SESSION['user_id'];
+
+        $SQL = "INSERT INTO `chat`(`chat_content`, `chat_date`, `user_id`) VALUES ('$message',NOW(),'$user_id')";
+        $result = $conn->query($SQL);
+
+        if(!$result){
+            echo '<div class="callout callout-danger"><h4>Mislukt :(</h4><p>Er is iets mis gegaan, probeer het eens opnieuw</p>';
+            echo $conn->error; //debugging purposes, uncomment when needed
+            echo '</div>';
+        }else{
+            header('Refresh: 0; url=');
+        }
+}
+}
+
+
+function chat_final($conn, $col, $box, $height) {
+    echo '<script>
+                window.onload=function () {
+                    var objDiv = document.getElementById("chat");
+                    objDiv.scrollTop = objDiv.scrollHeight;
+                }
+                var auto_refresh = setInterval(
+                function()
+                {
+                $("#chat").load("chat_reload.php");
+                }, 2000);
+            </script>';
+    
+    
+        echo '<div class="col-md-' . $col . '">';
+          echo '<!-- DIRECT CHAT WARNING -->
+                  <div class="box box-warning direct-chat direct-chat-warning">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Chat</h3>';
+            
+            if($box > 0){
+                    echo '<div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                        </button>
+                      </div>';
+            }
+        
+            echo '</div>
+                    <!-- /.box-header -->
+                    <div class="box-body" >
+                      <!-- Conversations are loaded here -->
+                      <div class="direct-chat-messages" id="chat" style="' . $height . ' overflow-x: hidden; ">
+                        <!-- Message. Default to the left -->';
+                  
+                        
+
+                         $SQL = "SELECT * FROM chat ORDER BY chat_date ASC";
+                $result = $conn->query($SQL);
+                  
+                
+                 while($row = mysqli_fetch_assoc($result)){
+                  $user_id = $row['user_id'];
+				  
+				  if($user_id == $_SESSION['user_id']){
+					echo '<div class="direct-chat-msg right">
+							<div class="right" style="float:right;">
+                            <div class="direct-chat-info clearfix">';
+
+                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
+                            $result2 = $conn->query($SQL);
+                            while($row2 = mysqli_fetch_assoc($result2)){
+                              echo '<span class="direct-chat-name pull-right">' . $row2['user_name'] . '</span>';  
+                              echo '<span class="direct-chat-timestamp pull-left">' . $row['chat_date'] . '</span>';
+                              echo '</div>';
+                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
+                            }
+                            
+                      echo '<div class="direct-chat-text" style="background: #f39c12; border-color: #f39c12; color: #fff;">';
+                        echo $row['chat_content'];
+                      echo '</div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+                    </div>
+                    
+                    <!-- /.direct-chat-msg -->';
+				  }else{
+                    
+                    echo '<div class="direct-chat-msg">
+							<div class="left" style="float:left;">
+                            <div class="direct-chat-info clearfix">';
+
+                            $SQL = "SELECT * FROM users WHERE user_id = $user_id";
+                            $result2 = $conn->query($SQL);
+                            while($row2 = mysqli_fetch_assoc($result2)){
+                              echo '<span class="direct-chat-name pull-left">' . $row2['user_name'] . '</span>';  
+                              echo '<span class="direct-chat-timestamp pull-right">' . $row['chat_date'] . '</span>';
+                              echo '</div>';
+                              echo '<img class="direct-chat-img" src="' . $row2['user_image'] . '" alt="Message User Image"><!-- /.direct-chat-img -->';
+                            }
+                            
+                      echo '<div class="direct-chat-text">';
+                        echo $row['chat_content'];
+                      echo '</div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+					</div>
+                    <!-- /.direct-chat-msg -->';
+					}
+                }
+
+                        
+               echo' </div>
+              <!--/.direct-chat-messages-->
+              <!-- /.direct-chat-pane -->
+              </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+              <form action="" method="POST">
+                <div class="input-group">
+                  <input type="text" name="message" placeholder="Typ bericht ..." class="form-control">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-warning btn-flat">Verzend</button>
+                      </span>
+                </div>
+              </form>
+            </div>
+            <!-- /.box-footer-->
+          </div>
+          <!--/.direct-chat -->
+        </div>';
+    
+        if(isset($_POST['message']) | !empty($_POST['message'])){
+
+        $message = $_POST['message'];
+        $user_id = $_SESSION['user_id'];
+
+        $SQL = "INSERT INTO `chat`(`chat_content`, `chat_date`, `user_id`) VALUES ('$message',NOW(),'$user_id')";
+        $result = $conn->query($SQL);
+
+        if(!$result){
+            echo '<div class="callout callout-danger"><h4>Mislukt :(</h4><p>Er is iets mis gegaan, probeer het eens opnieuw</p>';
+            echo $conn->error; //debugging purposes, uncomment when needed
+            echo '</div>';
+        }else{
+            header('Refresh: 0;');
+        }
+}
+}
+
 ?>

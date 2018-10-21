@@ -183,7 +183,7 @@ if($_SESSION['user_level'] >= 1){
                     echo "<tr>";
                     echo "<td>" . $row['regKey_id'] . "</td>";
                     echo "<td>" . $row['regKey_regKey'] . "</td>";
-                    echo "<td><a href='http://localhost/website-14/admin/register.php?regKey=" . $row['regKey_regKey'] . "'>Link</a></td>";
+                    echo "<td><a href='register.php?regKey=" . $row['regKey_regKey'] . "'>Link</a></td>";
                     echo "<tr>";
                 }
                 ?>

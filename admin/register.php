@@ -163,10 +163,12 @@ if(isset($_GET['regKey'])){
                 }
                 echo '</ul></div>';
             }else{
+                //Create recoverkey 
+                $user_recKey = "TDGHL_" . generateRandomString() . "";
                 
                 //Create the new user
-                $SQL = "INSERT INTO users(user_name, user_email, user_pass, user_image, user_since)
-                VALUES('$user_name','$user_email','$user_pass', 'dist/img/avatar5.png', NOW())";
+                $SQL = "INSERT INTO users(user_name, user_email, user_pass, user_image, user_since, user_recovery)
+                VALUES('$user_name','$user_email','$user_pass', 'dist/img/avatar5.png', NOW(), '$user_recKey')";
                 $SQL2 = "DELETE FROM regkeys WHERE regKey_regKey='$regKey'";
 
                 $result = $conn->query($SQL);
