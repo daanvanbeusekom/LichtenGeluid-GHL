@@ -627,4 +627,104 @@ function chat_final($conn, $col, $box, $height) {
 }
 }
 
+function search($conn){
+    
+    if(isset($_GET['search'])){
+        echo '<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default" id="btnTrigger" style="display:none;"></button>';
+    }
+    
+    if(isset($_GET['q'])){
+    
+    $query = $_GET['q']; 
+    // gets value sent over search form
+     
+    
+    $min_length = 3;
+    // you can set minimum length of the query if you want
+        
+    echo '<div class="modal fade bd-example-modal-lg" id="modal-default" style="">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+              <div class="modal-header" style="border-bottom-color:#e5e5e5;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Zoekresultaten</h4>
+              </div>
+              <div class="modal-body" style="background-color:#f9fafc">
+              <div class="row">';
+     
+    if(strlen($query) >= $min_length){ // if query length is more or equal minimum length then
+         
+        $query = htmlspecialchars($query); 
+        // changes characters used in html to their equivalents, for example: < to &gt;
+         
+        
+        // makes sure nobody uses SQL injection
+         
+        $SQL = "SELECT * FROM materiaal
+            WHERE (`naam` LIKE '%".$query."%') OR (`type` LIKE '%".$query."%') OR (`opmerkingen` LIKE '%".$query."%') ";
+        
+        $raw_results = $conn->query($SQL);
+             
+        // * means that it selects all fields, you can also write: `id`, `title`, `text`
+        // articles is the name of our table
+         
+        // '%$query%' is what we're looking for, % means anything, for example if $query is Hello
+        // it will match "hello", "Hello man", "gogohello", if you want exact match use `title`='$query'
+        // or if you want to match just full word so "gogohello" is out use '% $query %' ...OR ... '$query %' ... OR ... '% $query'
+         
+                                
+        if(mysqli_num_rows($raw_results) > 0){ // if one or more rows are returned do following   
+            echo "<h3 style='padding-left:15px;'><a href='materiaal.php?page=table'>Materiaal</a></h3>";
+
+            while($results = mysqli_fetch_array($raw_results)){
+            // $results = mysql_fetch_array($raw_results) puts data from database into array, while it's valid it does the loop
+                echo '<div class="col-md-4"><a href="materiaal.php?page=table&naam='.$results['naam'].'#'.$results['naam'].'">
+                        <div class="box" style="min-height:150px">
+                            <div class="box-header with-border">';
+                            $cat_id = $results['category_id'];             
+                            
+                            $SQL = "SELECT * FROM materiaal_categories WHERE cat_id = '$cat_id'";
+                                    $result = $conn->query($SQL);
+                                    $row = mysqli_fetch_assoc($result);
+                                    $category = $row['cat_name'];
+                                        
+                                
+                                echo '<h3 class="box-title">'.$category.'</h3>
+                            </div>
+                            <div class="box-body">';
+                echo "<p><h3>".$results['naam']."</h3>".$results['type']."</p>";
+                // posts results gotten from database(title and text) you can also show id ($results['id'])
+                echo '</div></div></a></div>';
+                }
+                
+            
+             
+            }
+            else{ // if there is no matching rows do following
+                echo '<div class="callout callout-danger" style="margin-bottom:0px;"><h4>Mislukt :(</h4><p>Geen resultaat, probeer het eens opnieuw</p></div>';
+            }
+         
+        
+    }
+    else{ // if query length is less than minimum
+        echo '<div class="callout callout-danger" style="margin-bottom:0px;"><h4>Mislukt :(</h4><p>De zoekopdracht is te kort, de minimale lengte is '.$min_length.' tekens.</p></div>';
+    }
+    
+    if(isset($_GET['search'])){
+    
+    echo '</div></div>
+              <div class="modal-footer" style="border-top-color:#e5e5e5 !important">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Sluiten</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>';
+    }
+
+}
+}
+
 ?>

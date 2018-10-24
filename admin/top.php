@@ -6,7 +6,6 @@ include "functions.php";
 session_start();
 check_logged_in();
 
-
 $version = '0.4.1';
 ?> 
 
@@ -77,12 +76,14 @@ $version = '0.4.1';
             });
           });
   </script>
+  
 
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     
 </head>
+<?php search($conn); ?>
 <body class="hold-transition skin-blue fixed sidebar-mini sidebar-mini-expand-feature">
 <div class="wrapper">
 
@@ -261,19 +262,38 @@ $version = '0.4.1';
         </div>
       </div>
       <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
+      <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Zoeken...">
+          <input type="text" name="q" class="form-control search-menu-box" placeholder="Zoeken..." id="my-search">
           <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat">
                   <i class="fa fa-search"></i>
+                  <?php 
+    
+                    if(isset($_GET['page'])){   // for pages and materials
+                        $value = $_GET['page'];
+                    }elseif(isset($_GET['show_user'])){ //for users
+                        $value = $_GET['show_user'];
+                    }elseif(isset($_GET['item'])){ //for galery and calendar
+                        $value = $_GET['item'];
+                    }elseif(isset($_GET['event'])){  //for event page
+                        $value = $_GET['event'];
+                    }else{
+                        $value = 0;
+                    }
+            
+                    $name = chop(chop($_SERVER['QUERY_STRING'],$value),"=");
+                       
+                    
+                  ?>
+                  <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value;?>">
                 </button>
               </span>
         </div>
       </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu" data-widget="tree">
+      <ul class="sidebar-menu" data-widget="tree" id="my-tree">
         <li>
           <a href="index.php">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
@@ -376,6 +396,7 @@ $version = '0.4.1';
         
         <?php
           }
+          
         ?>
       </ul>
     </section>

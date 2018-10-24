@@ -1,5 +1,9 @@
 <?php $version = '0.4.1'; ?>
 </section>
+
+
+
+
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
       <b>Version</b> <?php echo $version ?>
@@ -83,7 +87,15 @@ $PAGE = basename($_SERVER['PHP_SELF']);
         
       });
     </script>
-<?php } ?>
+<?php } 
+
+if(isset($_GET['search'])){
+echo "<script type='text/javascript'>
+        $('#btnTrigger').click();
+      </script>";
+}?>
+
+
 
 </body>
 </html>

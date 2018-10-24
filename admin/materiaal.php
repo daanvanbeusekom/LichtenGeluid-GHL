@@ -4,6 +4,7 @@ if($request_page == "table"){
 $page = 'table';
 include "top.php";
 check_admin();
+
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -60,8 +61,14 @@ check_admin();
                             $result = $conn->query($SQL);
         
                             while($row = $result->fetch_assoc()){
+                            if(isset($_GET['naam'])){
+                                if($_GET['naam'] == $row['naam']){
+                                    echo '<tr style="background-color:#f5f5f5">';
+                                }
+                            }else{
                                 echo "<tr>";
-                                    echo "<td>" . $row['naam'] . "</td>";
+                            }
+                                    echo "<td id='" . $row['naam'] . "'>" . $row['naam'] . "</td>";
                                     //Staat
                                     if ($row['staat'] == '1'){
                                         echo "<td>Goed</td>";
